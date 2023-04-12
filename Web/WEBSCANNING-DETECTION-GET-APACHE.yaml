@@ -1,0 +1,84 @@
+# Rule name, must be unique
+name: WEB SCRANNING AND BRUTEFORCE
+
+# Alert on x events in y seconds
+type: any
+
+# Alert when this many documents matching the query occur within a timeframe
+num_events: 1
+
+# num_events must occur within this amount of time to trigger an alert
+timeframe:
+  minutes: 15
+
+
+# A list of elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+- query:
+    query_string:
+      query: "(user_agent.original: /.*[Ss][Qq][Ll][Mm][Aa][Pp].*/) OR (url.original: (/.*[Uu][Nn][Ii][Oo][Nn].*[Ss][Ee][Ll][Ee][Cc][Tt].*(\\d|\\d[,)(`]|.*)+/) OR (/(.*[Ss][Ee][Ll][Ee][Cc][Tt].*(\\W[Ff][Rr][Oo][Mm]\\W|\\W[Ll][Ii][Mm][Ii][Tt]\\W|[Ss][Ll][Ee][Ee][Pp]\\W).*|.*[Dd][Ee][Ll][Ee][Tt][Ee].*(\\W[Ff][Rr][Oo][Mm]\\W|\\W[Ww][Hh][Ee][Rr][Ee]\\W).*|.*[Ii][Nn][Ss][Ee][Rr][Tt].*(\\W[Ii][Nn][Tt][Oo]\\W|\\W[Vv][Aa][Ll][Uu][Ee][Ss]\\W).*|.*[Uu][Pp][Dd][Aa][Tt][Ee].*(\\W[Ss][Ee][Tt]\\W|\\W[Ww][Hh][Ee][Rr][Ee]\\W).*)/))"
+
+index: filebeat-*
+
+# When the attacker continues, send a new alert after x minutes
+realert:
+  minutes: 1
+
+query_key:
+  - source.ip
+
+include:
+  - "@timestamp"
+  - host.name
+  - source.ip
+  - url.original
+  - http.response.status_code
+  - user_agent.original
+  - user_agent.os.full
+  - log.file.path
+  - source.as.organization.name
+  - source.geo.country_name
+  - source.geo.city_name
+
+include_match_in_root: true
+
+alert_subject: "Web Scanning or Bruteforce attack on **{}**"
+alert_subject_args:
+  - host.name
+
+alert_text: |-
+  Web Scanning or Bruteforce attack on **{1}** is detected.
+  Attack Summary:
+  **Timestamp:**: {0}
+  **IP:** {2}
+  **URL:** {3}
+  **STATUS CODE:** {4}
+  **USER AGENT:** {5}
+  **OS:** {6}
+  **LOG FILE:** {7}
+  **ISP:** {8}
+  **COUNTRY:** {9}
+  **CITY:** {10}
+
+alert_text_args:
+  - "@timestamp"
+  - host.name
+  - source.ip
+  - url.original
+  - http.response.status_code
+  - user_agent.original
+  - user_agent.os.full
+  - log.file.path
+  - source.as.organization.name
+  - source.geo.country_name
+  - source.geo.city_name
+
+# Alert body only cointains a title and text
+alert_text_type: alert_text_only
+
+alert:
+- "discord"
+discord:
+discord_webhook_url: https://discord.com/api/webhooks/xxxxx/xxxxxxxx

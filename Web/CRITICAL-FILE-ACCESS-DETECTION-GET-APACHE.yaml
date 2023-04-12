@@ -1,0 +1,84 @@
+# Rule name, must be unique
+name: CRITICAL FILE ACCESS
+
+# Alert on x events in y seconds
+type: any
+
+# Alert when this many documents matching the query occur within a timeframe
+num_events: 1
+
+# num_events must occur within this amount of time to trigger an alert
+timeframe:
+  minutes: 15
+
+
+# A list of elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+- query:
+    query_string:
+      query: "(url.original: (((/.*\\/[Ee][Tt][Cc]\\/([Pp][Aa][Ss][Ss][Ww][Dd]|[Ss][Hh][Aa][Dd][Oo][Ww]|[Gg][Rr][Oo][Uu][Pp]|[Ss][Uu][Dd][Oo][Ee][Rr][Ss]|[Ff][Ss][Tt][Aa][Bb]|[Hh][Oo][Ss][Tt][Ss]).*/)) OR (/.*\\/[Vv][Aa][Rr]\\/[Ll][Oo][Gg]\\/.*/) OR (/.*\\.([Ll][Oo][Gg]|[Ii][Nn][Ii]|[Ii][Nn][Ii][Tt]|[Ee][Rr][Rr]|[Ee][Nn][Vv]|[Gg][Ii][Tt]|[Ss][Hh]|[Ee][Vv][Tt]|[Ee][Vv][Tt][Xx]).*/) OR (/.*\\.(([Bb][Aa][Ss][Hh]|[Zz][Ss][Hh]|[Cc][Ss][Hh]|[Tt][Cc][Ss][Hh]|[Kk][Ss][Hh]|[Mm][Kk][Ss][Hh]|[Dd][Aa][Ss][Hh]|[Ff][Ii][Ss][Hh]|[Xx][Oo][Nn][Ss][Hh]|[Pp][Oo][Ss][Hh])([Rr][Cc]|_history|_logout|_profile)|[Pp][Rr][Oo][Ff][Ii][Ll][Ee]).*/)) AND NOT (/.*\\.[Ii][Cc][Oo]/))"
+
+index: filebeat-*
+
+# When the attacker continues, send a new alert after x minutes
+realert:
+  minutes: 1
+
+query_key:
+  - source.ip
+
+include:
+  - "@timestamp"
+  - host.name
+  - source.ip
+  - url.original
+  - http.response.status_code
+  - user_agent.original
+  - user_agent.os.full
+  - log.file.path
+  - source.as.organization.name
+  - source.geo.country_name
+  - source.geo.city_name
+
+include_match_in_root: true
+
+alert_subject: "Critical File Access on **{}**"
+alert_subject_args:
+  - host.name
+
+alert_text: |-
+  Critical File Access on **{1}** is detected.
+  Attack Summary:
+  **Timestamp:**: {0}
+  **IP:** {2}
+  **URL:** {3}
+  **STATUS CODE:** {4}
+  **USER AGENT:** {5}
+  **OS:** {6}
+  **LOG FILE:** {7}
+  **ISP:** {8}
+  **COUNTRY:** {9}
+  **CITY:** {10}
+
+alert_text_args:
+  - "@timestamp"
+  - host.name
+  - source.ip
+  - url.original
+  - http.response.status_code
+  - user_agent.original
+  - user_agent.os.full
+  - log.file.path
+  - source.as.organization.name
+  - source.geo.country_name
+  - source.geo.city_name
+
+# Alert body only cointains a title and text
+alert_text_type: alert_text_only
+
+alert:
+- "discord"
+discord:
+discord_webhook_url: https://discord.com/api/webhooks/xxxxx/xxxxxxxx
