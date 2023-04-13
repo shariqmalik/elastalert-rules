@@ -18,7 +18,7 @@ timeframe:
 filter:
 - query:
     query_string:
-      query: "(user_agent.original: /.*[Ss][Qq][Ll][Mm][Aa][Pp].*/) OR (url.original: (/.*[Uu][Nn][Ii][Oo][Nn].*[Ss][Ee][Ll][Ee][Cc][Tt].*(\\d|\\d[,)(`]|.*)+/) OR (/(.*[Ss][Ee][Ll][Ee][Cc][Tt].*(\\W[Ff][Rr][Oo][Mm]\\W|\\W[Ll][Ii][Mm][Ii][Tt]\\W|[Ss][Ll][Ee][Ee][Pp]\\W).*|.*[Dd][Ee][Ll][Ee][Tt][Ee].*(\\W[Ff][Rr][Oo][Mm]\\W|\\W[Ww][Hh][Ee][Rr][Ee]\\W).*|.*[Ii][Nn][Ss][Ee][Rr][Tt].*(\\W[Ii][Nn][Tt][Oo]\\W|\\W[Vv][Aa][Ll][Uu][Ee][Ss]\\W).*|.*[Uu][Pp][Dd][Aa][Tt][Ee].*(\\W[Ss][Ee][Tt]\\W|\\W[Ww][Hh][Ee][Rr][Ee]\\W).*)/))"
+      query: "(user_agent.original: (/.*([Ww][Gg][Ee][Tt]|[Cc][Uu][Rr][Ll]|[Hh][Tt][Tt][Pp][Cc][Ll][Ii][Ee][Nn][Tt]|[Pp][Yy][Tt][Hh][Oo][Nn]|[Pp][Ee][Rr][Ll]|[Rr][Uu][Bb][Yy]|[Jj][Aa][Vv][Aa]|[Aa][Xx][Ee][Ll]|[Ll][Ww]|[Bb][Uu][Rr][Pp]|[Aa][Cc][Uu][Nn][Ee][Tt][Ii][Xx]|[Nn][Ee][Ss][Ss][Ss][Uu][Ss]|[Oo][Pp][Ee][Nn][Vv][Aa][Ss]|[Nn][Mm][Aa][Pp]|[Mm][Aa][Ss][Ss][Ss][Cc][Aa][Nn]|[Gg][Ii][Tt][Hh][Uu][Bb]).*/))"
 
 index: filebeat-*
 
